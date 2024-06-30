@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.testapp.mercaditoapk.model.Student
 import com.testapp.mercaditoapk.model.StudentDTO
-import com.testapp.testapp.repository.RepositoryStudent
+import com.testapp.mercaditoapk.repository.RepositoryStudent
 import kotlinx.coroutines.launch
 
 class StudentViewModel : ViewModel() {
