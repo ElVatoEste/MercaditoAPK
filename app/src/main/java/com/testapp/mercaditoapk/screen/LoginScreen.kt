@@ -7,13 +7,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,22 +31,18 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.testapp.mercaditoapk.R
 
+
 @Preview(showBackground = true)
 @Composable
-fun CrearCuentaScreenPreview() {
-    CrearCuentaScreen(navController = rememberNavController())
+fun LoginScreenPreview() {
+    LoginScreen(navController = rememberNavController())
 }
 
 @Composable
-fun CrearCuentaScreen(navController: NavController) {
-    val nombres = remember { mutableStateOf("") }
-    val apellidos = remember { mutableStateOf("") }
+fun LoginScreen(navController: NavController) {
     val cif = remember { mutableStateOf("") }
-    val correo = remember { mutableStateOf("") }
     val contrasena = remember { mutableStateOf("") }
-    val confirmarContrasena = remember { mutableStateOf("") }
     val passwordVisible = remember { mutableStateOf(false) }
-    val confirmPasswordVisible = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -66,7 +60,6 @@ fun CrearCuentaScreen(navController: NavController) {
 
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-
     ) {
         Image(
             painter = painterResource(R.drawable.logoclean),
@@ -74,49 +67,19 @@ fun CrearCuentaScreen(navController: NavController) {
             modifier = Modifier.size(200.dp)
         )
         Text(
-            text = "Crear una cuenta",
+            text = "Bienvenido de nuevo",
             color = Color.White,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            TextField(
-
-                value = nombres.value,
-                onValueChange = { nombres.value = it },
-                label = { Text("Nombres") },
-                modifier = Modifier
-                    .weight(1f).background(Color.White, shape = RoundedCornerShape(16.dp)),
-                shape = RoundedCornerShape(16.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            TextField(
-                value = apellidos.value,
-                onValueChange = { apellidos.value = it },
-                label = { Text("Apellidos") },
-                modifier = Modifier
-                    .weight(1f).background(Color.White, shape = RoundedCornerShape(16.dp)),
-                shape = RoundedCornerShape(16.dp)
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = cif.value,
             onValueChange = { cif.value = it },
             label = { Text("CIF") },
-            modifier = Modifier.fillMaxWidth()
-            .background(Color.White, shape = RoundedCornerShape(16.dp)),
-            shape = RoundedCornerShape(16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-        TextField(
-            value = correo.value,
-            onValueChange = { correo.value = it },
-            label = { Text("Correo electrónico institucional") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(16.dp)),
             shape = RoundedCornerShape(16.dp)
         )
@@ -126,35 +89,54 @@ fun CrearCuentaScreen(navController: NavController) {
             onValueChange = { contrasena.value = it },
             label = { Text("Contraseña") },
             visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(16.dp)),
             shape = RoundedCornerShape(16.dp)
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        TextField(
-            value = confirmarContrasena.value,
-            onValueChange = { confirmarContrasena.value = it },
-            label = { Text("Confirmar contraseña") },
-            visualTransformation = if (confirmPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-                .background(Color.White, shape = RoundedCornerShape(16.dp)),
-            shape = RoundedCornerShape(16.dp)
+        Spacer(modifier = Modifier.height(32.dp))
+        Text(
+            text = "¿Olvidaste tu contraseña?",
+            color = Color.White,
+            fontSize = 16.sp
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { /* Handle registration */ },
+            onClick = { /* Handle login */ },
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
             shape = RoundedCornerShape(50),
         ) {
-            Text(text = "Siguiente", fontSize = 16.sp)
+            Text(text = "Iniciar sesión", fontSize = 16.sp)
         }
-        Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "¿Ya tienes una cuenta? Inicia sesión",
+            text = "O",
+            color = Color.White,
+            fontSize = 16.sp
+        )
+        Button(
+            onClick = { /* Handle Google login */ },
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(50),
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_google_logo),
+                contentDescription = "Google Logo",
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = "Continuar con Google", fontSize = 16.sp)
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "¿No tienes una cuenta? Regístrate",
             color = Color.White,
             fontSize = 16.sp
         )
     }
 }
+
+

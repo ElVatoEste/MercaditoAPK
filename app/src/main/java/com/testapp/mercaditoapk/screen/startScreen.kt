@@ -1,8 +1,8 @@
 package com.testapp.mercaditoapk.screen
 
-import androidx.annotation.ColorRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,7 +26,7 @@ import com.testapp.mercaditoapk.R
 @Composable
 fun InicioPreview() {
     InicioScreen(navController = rememberNavController())
-    }
+}
 
 @Composable
 fun InicioScreen(navController: NavController) {
@@ -71,10 +70,25 @@ fun InicioScreen(navController: NavController) {
         ) {
             Text(text = "¡Empecemos!", fontSize = 16.sp)
         }
-        Text(
-            text = "¡Ya tengo una cuenta!",
-            color = Color.White,
-            fontSize = 16.sp
-        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "¡Ya tengo una cuenta!",
+                color = Color.White,
+                fontSize = 16.sp,
+                modifier = Modifier.clickable { navController.navigate("login") }
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Box(
+                modifier = Modifier
+                    .size(16.dp) // Tamaño del cuadrado
+                    .background(Color.White)
+                    .clickable { navController.navigate("login") }
+            )
+        }
     }
 }
