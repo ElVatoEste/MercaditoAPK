@@ -9,7 +9,8 @@ object ApiAdapter {
 
     val okHttpClient = OkHttpClient.Builder().build()
     fun getInstance() : Retrofit {
-        return Retrofit.Builder().baseUrl(Global.BASE_URL)
+        return Retrofit.Builder()
+            .baseUrl(Global.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
