@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.testapp.mercaditoapk.screen.CrearCuentaScreen
 import com.testapp.mercaditoapk.screen.InicioScreen
+import com.testapp.mercaditoapk.screen.RegistrarScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,5 +27,6 @@ fun MyApp() {
     NavHost(navController, startDestination = "inicio") {
         composable("inicio") { InicioScreen(navController) }
         composable("crear_cuenta") { CrearCuentaScreen(navController) }
+        composable("registrar_cuenta") { RegistrarScreen(navController) }
     }
 }
