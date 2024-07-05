@@ -6,15 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -30,7 +24,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.testapp.mercaditoapk.R
-
+import com.testapp.mercaditoapk.viewmodel.StudentViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Preview(showBackground = true)
 @Composable
@@ -39,10 +34,11 @@ fun LoginScreenPreview() {
 }
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, viewModel: StudentViewModel = viewModel()) {
     val cif = remember { mutableStateOf("") }
     val contrasena = remember { mutableStateOf("") }
-    val passwordVisible = remember { mutableStateOf(false) }
+    var passwordVisible by remember { mutableStateOf(false) }
+    val loginResult by viewModel.loginResult.observeAsState()
 
     Column(
         modifier = Modifier
@@ -57,7 +53,6 @@ fun LoginScreen(navController: NavController) {
             )
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -88,21 +83,48 @@ fun LoginScreen(navController: NavController) {
             value = contrasena.value,
             onValueChange = { contrasena.value = it },
             label = { Text("Contraseña") },
-            visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(16.dp)),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
+            trailingIcon = {
+                val image = if (passwordVisible)
+                    painterResource(id = R.drawable.visibility)
+                else
+                    painterResource(id = R.drawable.visibility_off)
+
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(painter = image, contentDescription = null)
+                }
+            }
         )
         Spacer(modifier = Modifier.height(32.dp))
-        Text(
-            text = "¿Olvidaste tu contraseña?",
-            color = Color.White,
-            fontSize = 16.sp
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+
+        loginResult?.let {
+            it.fold(
+                onSuccess = { student ->
+                    Text(
+                        text = "Login Successful: Welcome, ${student?.name}",
+                        color = Color.Green,
+                        fontSize = 16.sp
+                    )
+                },
+                onFailure = { error ->
+                    Text(
+                        text = error.message ?: "Login failed",
+                        color = Color.Red,
+                        fontSize = 16.sp
+                    )
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
         Button(
-            onClick = { /* Handle login */ },
+            onClick = {
+                viewModel.login(cif.value.toLong(), contrasena.value)
+            },
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
@@ -138,5 +160,3 @@ fun LoginScreen(navController: NavController) {
         )
     }
 }
-
-

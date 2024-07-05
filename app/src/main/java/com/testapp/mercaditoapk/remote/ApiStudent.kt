@@ -7,6 +7,13 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiStudent {
+
+    @POST("/student/login")
+    suspend fun login(
+        @Query("cif") cif: Long,
+        @Query("password") password: String
+    ): Response<Student>
+
     @GET("/student/all")
     suspend fun getAllStudents(): Response<List<Student>>
 

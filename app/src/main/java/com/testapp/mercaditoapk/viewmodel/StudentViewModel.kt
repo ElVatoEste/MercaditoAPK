@@ -33,6 +33,9 @@ class StudentViewModel : ViewModel() {
     private val _removeFollowing = MutableLiveData<Result<String>>()
     val removeFollowing: LiveData<Result<String>> get() = _removeFollowing
 
+    private val _loginResult = MutableLiveData<Result<Student?>>()
+    val loginResult: LiveData<Result<Student?>> get() = _loginResult
+
     fun fetchAllStudents() {
         viewModelScope.launch {
             _allStudents.value = repository.getAllStudents()
@@ -72,6 +75,12 @@ class StudentViewModel : ViewModel() {
     fun removeFollowingFromStudent(idFollowing: Long, idFollower: Long) {
         viewModelScope.launch {
             _removeFollowing.value = repository.removeFollowingFromStudent(idFollowing, idFollower)
+        }
+    }
+
+    fun login(cif: Long, password: String) {
+        viewModelScope.launch {
+            _loginResult.value = repository.login(cif, password)
         }
     }
 }

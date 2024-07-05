@@ -12,6 +12,20 @@ class RepositoryStudent {
         ApiAdapter.getInstance().create(ApiStudent::class.java)
     }
 
+    suspend fun login(cif: Long, password: String): Result<Student?> {
+        return try {
+            val response: Response<Student> = apiStudent.login(cif, password)
+            if (response.isSuccessful) {
+                Result.success(response.body())
+            } else {
+                Result.failure(Exception("Login failed: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            Log.d("error", "${e.message}")
+            Result.failure(e)
+        }
+    }
+
     suspend fun getAllStudents(): Result<List<Student>> {
         return try {
             val response: Response<List<Student>> = apiStudent.getAllStudents()
