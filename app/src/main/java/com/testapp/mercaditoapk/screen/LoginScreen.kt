@@ -2,6 +2,7 @@ package com.testapp.mercaditoapk.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -156,7 +157,10 @@ fun LoginScreen(navController: NavController, viewModel: StudentViewModel = view
         Text(
             text = "¿No tienes una cuenta? Regístrate",
             color = Color.White,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            modifier = Modifier.clickable {
+                navController.navigate("crear_cuenta")
+            }
         )
     }
 }

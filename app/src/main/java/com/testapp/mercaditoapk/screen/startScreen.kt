@@ -82,13 +82,6 @@ fun InicioScreen(navController: NavController) {
                 fontSize = 16.sp,
                 modifier = Modifier.clickable { navController.navigate("login") }
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Box(
-                modifier = Modifier
-                    .size(16.dp) // Tamaño del cuadrado
-                    .background(Color.White)
-                    .clickable { navController.navigate("login") }
-            )
         }
     }
 }
