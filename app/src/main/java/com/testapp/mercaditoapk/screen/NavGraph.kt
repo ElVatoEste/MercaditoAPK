@@ -3,15 +3,19 @@ package com.testapp.mercaditoapk
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.testapp.mercaditoapk.screen.CrearCuentaScreen
 import com.testapp.mercaditoapk.screen.InicioScreen
 import com.testapp.mercaditoapk.screen.LoginScreen
+import com.testapp.mercaditoapk.screen.RegistrarScreen
 
 @Composable
 fun NavGraph(
-    navController: NavHostController,
+    navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -24,6 +28,25 @@ fun NavGraph(
         }
         composable("crear_cuenta") {
             CrearCuentaScreen(navController)
+        }
+        composable(
+            route = "registrar/{cif}/{nombres}/{apellidos}/{correo}/{contrasena}",
+            arguments = listOf(
+                navArgument("cif") { type = NavType.StringType },
+                navArgument("nombres") { type = NavType.StringType },
+                navArgument("apellidos") { type = NavType.StringType },
+                navArgument("correo") { type = NavType.StringType },
+                navArgument("contrasena") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            RegistrarScreen(
+                navController = navController,
+                cif = backStackEntry.arguments?.getString("cif") ?: "",
+                nombres = backStackEntry.arguments?.getString("nombres") ?: "",
+                apellidos = backStackEntry.arguments?.getString("apellidos") ?: "",
+                correo = backStackEntry.arguments?.getString("correo") ?: "",
+                contrasena = backStackEntry.arguments?.getString("contrasena") ?: ""
+            )
         }
         composable("login") {
             LoginScreen(navController)

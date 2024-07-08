@@ -2,6 +2,7 @@ package com.testapp.mercaditoapk.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -83,12 +84,12 @@ fun CrearCuentaScreen(navController: NavController) {
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             TextField(
-
                 value = nombres.value,
                 onValueChange = { nombres.value = it },
                 label = { Text("Nombres") },
                 modifier = Modifier
-                    .weight(1f).background(Color.White, shape = RoundedCornerShape(16.dp)),
+                    .weight(1f)
+                    .background(Color.White, shape = RoundedCornerShape(16.dp)),
                 shape = RoundedCornerShape(16.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -97,7 +98,8 @@ fun CrearCuentaScreen(navController: NavController) {
                 onValueChange = { apellidos.value = it },
                 label = { Text("Apellidos") },
                 modifier = Modifier
-                    .weight(1f).background(Color.White, shape = RoundedCornerShape(16.dp)),
+                    .weight(1f)
+                    .background(Color.White, shape = RoundedCornerShape(16.dp)),
                 shape = RoundedCornerShape(16.dp)
             )
         }
@@ -106,8 +108,9 @@ fun CrearCuentaScreen(navController: NavController) {
             value = cif.value,
             onValueChange = { cif.value = it },
             label = { Text("CIF") },
-            modifier = Modifier.fillMaxWidth()
-            .background(Color.White, shape = RoundedCornerShape(16.dp)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White, shape = RoundedCornerShape(16.dp)),
             shape = RoundedCornerShape(16.dp)
         )
 
@@ -116,7 +119,8 @@ fun CrearCuentaScreen(navController: NavController) {
             value = correo.value,
             onValueChange = { correo.value = it },
             label = { Text("Correo electrónico institucional") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(16.dp)),
             shape = RoundedCornerShape(16.dp)
         )
@@ -126,7 +130,8 @@ fun CrearCuentaScreen(navController: NavController) {
             onValueChange = { contrasena.value = it },
             label = { Text("Contraseña") },
             visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(16.dp)),
             shape = RoundedCornerShape(16.dp)
         )
@@ -136,13 +141,16 @@ fun CrearCuentaScreen(navController: NavController) {
             onValueChange = { confirmarContrasena.value = it },
             label = { Text("Confirmar contraseña") },
             visualTransformation = if (confirmPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(16.dp)),
             shape = RoundedCornerShape(16.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { /* Handle registration */ },
+            onClick = {
+                navController.navigate("registrar/${cif.value}/${nombres.value}/${apellidos.value}/${correo.value}/${contrasena.value}")
+            },
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
@@ -150,11 +158,15 @@ fun CrearCuentaScreen(navController: NavController) {
         ) {
             Text(text = "Siguiente", fontSize = 16.sp)
         }
+
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "¿Ya tienes una cuenta? Inicia sesión",
             color = Color.White,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            modifier = Modifier.clickable {
+                navController.navigate("login")
+            }
         )
     }
 }

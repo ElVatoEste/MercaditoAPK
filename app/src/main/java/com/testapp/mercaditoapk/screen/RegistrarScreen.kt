@@ -23,18 +23,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+
 import androidx.navigation.compose.rememberNavController
 import com.testapp.mercaditoapk.R
+import com.testapp.mercaditoapk.model.StudentDTO
+import com.testapp.mercaditoapk.viewmodel.StudentViewModel
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun RegistrarScreenPreview() {
-    RegistrarScreen(navController = rememberNavController())
+    RegistrarScreen(navController = rememberNavController(), "", "", "", "", "")
 }
+*/
 
 @Composable
-fun RegistrarScreen(navController: NavController) {
+fun RegistrarScreen(
+    navController: NavController,
+    cif: String,
+    nombres: String,
+    apellidos: String,
+    correo: String,
+    contrasena: String,
+    studentViewModel: StudentViewModel = viewModel()
+) {
     val telefono = remember { mutableStateOf("") }
     val descripcion = remember { mutableStateOf("") }
 
@@ -51,7 +64,6 @@ fun RegistrarScreen(navController: NavController) {
             )
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -85,7 +97,8 @@ fun RegistrarScreen(navController: NavController) {
             value = telefono.value,
             onValueChange = { telefono.value = it },
             label = { Text("Número de teléfono (contacto adicional)") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(16.dp)),
             shape = RoundedCornerShape(16.dp)
         )
@@ -94,7 +107,8 @@ fun RegistrarScreen(navController: NavController) {
             value = descripcion.value,
             onValueChange = { descripcion.value = it },
             label = { Text("Ingresa una descripción") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(16.dp))
                 .weight(1f),
             shape = RoundedCornerShape(16.dp)
@@ -108,7 +122,23 @@ fun RegistrarScreen(navController: NavController) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { /* Handle registration completion */ },
+            onClick = {
+                // Crea el objeto StudentDTO con todos los datos
+                val studentDTO = StudentDTO(
+                    CIF = cif.toLong(),
+                    name = nombres,
+                    surname = apellidos,
+                    email = correo,
+                    password = contrasena,
+                    phoneNumber = telefono.value,
+                    personalDescription = descripcion.value
+                )
+                // Llama al método para registrar al estudiante
+                studentViewModel.createStudent(studentDTO)
+
+                // Navega a la pantalla de inicio de sesión
+                navController.navigate("login")
+            },
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
@@ -121,7 +151,7 @@ fun RegistrarScreen(navController: NavController) {
             text = "¿Ya tienes una cuenta? Inicia sesión",
             color = Color.White,
             fontSize = 16.sp,
-            modifier = androidx.compose.ui.Modifier.clickable {
+            modifier = Modifier.clickable {
                 navController.navigate("login")
             }
         )
