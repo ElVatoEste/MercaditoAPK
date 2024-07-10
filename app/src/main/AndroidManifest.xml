@@ -10,9 +10,9 @@
         android:usesCleartextTraffic="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/logo"
+        android:icon="@drawable/ic_launcher_background"
         android:label="@string/app_name"
-        android:roundIcon="@android:drawable/alert_dark_frame"
+        android:roundIcon="@drawable/logoclean"
         android:supportsRtl="true"
         android:theme="@style/Theme.MercaditoAPK"
         tools:targetApi="31">
