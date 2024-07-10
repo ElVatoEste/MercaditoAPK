@@ -55,8 +55,12 @@ class RepositoryStudent {
     }
 
     suspend fun createStudent(studentDTO: StudentDTO): Result<String> {
+
+        Log.d("CIF repository", "${studentDTO.cif}")
+
         return try {
             val response: Response<String> = apiStudent.createStudent(studentDTO)
+
             if (response.isSuccessful) {
                 Result.success(response.body() ?: "Student created successfully")
             } else {

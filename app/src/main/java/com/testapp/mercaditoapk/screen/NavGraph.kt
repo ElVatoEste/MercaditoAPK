@@ -12,6 +12,7 @@ import com.testapp.mercaditoapk.screen.CrearCuentaScreen
 import com.testapp.mercaditoapk.screen.InicioScreen
 import com.testapp.mercaditoapk.screen.LoginScreen
 import com.testapp.mercaditoapk.screen.RegistrarScreen
+import com.testapp.mercaditoapk.screen.TestScreen
 
 @Composable
 fun NavGraph(
@@ -25,6 +26,9 @@ fun NavGraph(
     ) {
         composable("inicio") {
             InicioScreen(navController)
+        }
+        composable("test") {
+            TestScreen(navController)
         }
         composable("crear_cuenta") {
             CrearCuentaScreen(navController)

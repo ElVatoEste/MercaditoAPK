@@ -20,13 +20,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 
-import androidx.navigation.compose.rememberNavController
 import com.testapp.mercaditoapk.R
 import com.testapp.mercaditoapk.model.StudentDTO
 import com.testapp.mercaditoapk.viewmodel.StudentViewModel
@@ -125,7 +123,7 @@ fun RegistrarScreen(
             onClick = {
                 // Crea el objeto StudentDTO con todos los datos
                 val studentDTO = StudentDTO(
-                    CIF = cif.toLong(),
+                    cif = cif.toLong(),
                     name = nombres,
                     surname = apellidos,
                     email = correo,
