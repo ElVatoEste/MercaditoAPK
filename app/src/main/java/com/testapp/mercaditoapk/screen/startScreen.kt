@@ -62,7 +62,7 @@ fun InicioScreen(navController: NavController) {
         )
         Spacer(modifier = Modifier.height(32.dp))
         Button(
-            onClick = { navController.navigate("test") },
+            onClick = { navController.navigate("crear_cuenta") },
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),

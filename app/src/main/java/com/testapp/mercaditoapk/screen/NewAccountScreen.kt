@@ -7,17 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -48,8 +39,15 @@ fun CrearCuentaScreen(navController: NavController) {
     val correo = remember { mutableStateOf("") }
     val contrasena = remember { mutableStateOf("") }
     val confirmarContrasena = remember { mutableStateOf("") }
-    val passwordVisible = remember { mutableStateOf(false) }
-    val confirmPasswordVisible = remember { mutableStateOf(false) }
+    var passwordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
+
+    val nombresError = remember { mutableStateOf(false) }
+    val apellidosError = remember { mutableStateOf(false) }
+    val cifError = remember { mutableStateOf(false) }
+    val correoError = remember { mutableStateOf(false) }
+    val contrasenaError = remember { mutableStateOf(false) }
+    val confirmarContrasenaError = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -64,10 +62,8 @@ fun CrearCuentaScreen(navController: NavController) {
             )
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-
     ) {
         Image(
             painter = painterResource(R.drawable.logoclean),
@@ -87,6 +83,7 @@ fun CrearCuentaScreen(navController: NavController) {
                 value = nombres.value,
                 onValueChange = { nombres.value = it },
                 label = { Text("Nombres") },
+                isError = nombresError.value,
                 modifier = Modifier
                     .weight(1f)
                     .background(Color.White, shape = RoundedCornerShape(16.dp)),
@@ -97,6 +94,7 @@ fun CrearCuentaScreen(navController: NavController) {
                 value = apellidos.value,
                 onValueChange = { apellidos.value = it },
                 label = { Text("Apellidos") },
+                isError = apellidosError.value,
                 modifier = Modifier
                     .weight(1f)
                     .background(Color.White, shape = RoundedCornerShape(16.dp)),
@@ -108,6 +106,7 @@ fun CrearCuentaScreen(navController: NavController) {
             value = cif.value,
             onValueChange = { cif.value = it },
             label = { Text("CIF") },
+            isError = cifError.value,
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(16.dp)),
@@ -119,6 +118,7 @@ fun CrearCuentaScreen(navController: NavController) {
             value = correo.value,
             onValueChange = { correo.value = it },
             label = { Text("Correo electrónico institucional") },
+            isError = correoError.value,
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(16.dp)),
@@ -129,27 +129,65 @@ fun CrearCuentaScreen(navController: NavController) {
             value = contrasena.value,
             onValueChange = { contrasena.value = it },
             label = { Text("Contraseña") },
-            visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            isError = contrasenaError.value,
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(16.dp)),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
+            trailingIcon = {
+                val image = if (passwordVisible)
+                    painterResource(id = R.drawable.visibility)
+                else
+                    painterResource(id = R.drawable.visibility_off)
+
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(painter = image, contentDescription = null)
+                }
+            }
         )
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = confirmarContrasena.value,
             onValueChange = { confirmarContrasena.value = it },
             label = { Text("Confirmar contraseña") },
-            visualTransformation = if (confirmPasswordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            isError = confirmarContrasenaError.value,
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White, shape = RoundedCornerShape(16.dp)),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
+            trailingIcon = {
+                val image = if (confirmPasswordVisible)
+                    painterResource(id = R.drawable.visibility)
+                else
+                    painterResource(id = R.drawable.visibility_off)
+
+                IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                    Icon(painter = image, contentDescription = null)
+                }
+            }
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                navController.navigate("registrar/${cif.value}/${nombres.value}/${apellidos.value}/${correo.value}/${contrasena.value}")
+                val isValid = validateInputs(
+                    nombres.value,
+                    apellidos.value,
+                    cif.value,
+                    correo.value,
+                    contrasena.value,
+                    confirmarContrasena.value,
+                    nombresError,
+                    apellidosError,
+                    cifError,
+                    correoError,
+                    contrasenaError,
+                    confirmarContrasenaError
+                )
+                if (isValid) {
+                    navController.navigate("registrar/${cif.value}/${nombres.value}/${apellidos.value}/${correo.value}/${contrasena.value}")
+                }
             },
             modifier = Modifier
                 .padding(16.dp)
@@ -169,4 +207,40 @@ fun CrearCuentaScreen(navController: NavController) {
             }
         )
     }
+}
+
+fun validateInputs(
+    nombres: String,
+    apellidos: String,
+    cif: String,
+    correo: String,
+    contrasena: String,
+    confirmarContrasena: String,
+    nombresError: MutableState<Boolean>,
+    apellidosError: MutableState<Boolean>,
+    cifError: MutableState<Boolean>,
+    correoError: MutableState<Boolean>,
+    contrasenaError: MutableState<Boolean>,
+    confirmarContrasenaError: MutableState<Boolean>
+): Boolean {
+    var isValid = true
+
+    nombresError.value = nombres.isBlank()
+    apellidosError.value = apellidos.isBlank()
+    cifError.value = cif.isBlank()
+    correoError.value = correo.isBlank()
+    contrasenaError.value = contrasena.isBlank()
+    confirmarContrasenaError.value = confirmarContrasena.isBlank()
+
+    if (contrasena != confirmarContrasena) {
+        contrasenaError.value = true
+        confirmarContrasenaError.value = true
+        isValid = false
+    }
+
+    if (nombresError.value || apellidosError.value || cifError.value || correoError.value || contrasenaError.value || confirmarContrasenaError.value) {
+        isValid = false
+    }
+
+    return isValid
 }
