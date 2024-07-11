@@ -26,6 +26,7 @@ class RepositoryStudent {
         }
     }
 
+
     suspend fun getAllStudents(): Result<List<Student>> {
         return try {
             val response: Response<List<Student>> = apiStudent.getAllStudents()
