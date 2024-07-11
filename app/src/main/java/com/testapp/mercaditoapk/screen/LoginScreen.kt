@@ -105,11 +105,7 @@ fun LoginScreen(navController: NavController, viewModel: StudentViewModel = view
         loginResult?.let {
             it.fold(
                 onSuccess = { student ->
-                    Text(
-                        text = "Login Successful: Welcome, ${student?.name}",
-                        color = Color.Green,
-                        fontSize = 16.sp
-                    )
+                    navController.navigate("menu/${cif.value}")
                 },
                 onFailure = { error ->
                     Text(

@@ -11,6 +11,7 @@ import androidx.navigation.navArgument
 import com.testapp.mercaditoapk.screen.CrearCuentaScreen
 import com.testapp.mercaditoapk.screen.InicioScreen
 import com.testapp.mercaditoapk.screen.LoginScreen
+import com.testapp.mercaditoapk.screen.MenuScreen
 import com.testapp.mercaditoapk.screen.RegistrarScreen
 import com.testapp.mercaditoapk.screen.TestScreen
 
@@ -54,6 +55,17 @@ fun NavGraph(
         }
         composable("login") {
             LoginScreen(navController)
+        }
+        composable(
+            route = "menu/{cif}",
+            arguments = listOf(
+                navArgument("cif") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            MenuScreen(
+                navController = navController,
+                cif = backStackEntry.arguments?.getString("cif") ?: ""
+            )
         }
     }
 }
