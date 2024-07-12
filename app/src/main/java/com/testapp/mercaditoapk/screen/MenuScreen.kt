@@ -9,14 +9,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.testapp.mercaditoapk.viewmodel.ImageViewModel
-import okhttp3.ResponseBody
 
 @Composable
 fun MenuScreen(
@@ -24,9 +22,11 @@ fun MenuScreen(
     cif: String,
     imageViewModel: ImageViewModel = viewModel()
 ) {
-    val studentImage = imageViewModel.studentImage.observeAsState().value
+    // Observe the student image LiveData
+    val studentImage = imageViewModel.studentImage.observeAsState()
 
-    LaunchedEffect(Unit) {
+    // Ensure the image is only downloaded once
+    LaunchedEffect(cif) {
         imageViewModel.downloadStudentImage(cif.toLong())
     }
 
@@ -40,14 +40,8 @@ fun MenuScreen(
         Text(text = "Menú Principal")
         Text(text = "CIF: $cif")
 
-        // Trigger downloading the image bytes
-        imageViewModel.downloadStudentImage(cif.toLong())
-
-        // Observe the student image LiveData
-        val studentImage: Bitmap? = imageViewModel.studentImage.value
-
         // Display the image if it's available
-        studentImage?.let {
+        studentImage.value?.let {
             val painter = rememberImagePainter(data = it)
             Image(
                 painter = painter,
