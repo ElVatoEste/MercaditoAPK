@@ -41,22 +41,23 @@ fun MenuScreen(
     // Observe the recent publications ID LiveData
     val publicationsId = publicationViewModel.recentPublicationsId.observeAsState()
     val isLoading = publicationViewModel.loading.observeAsState(initial = true)
+    val imageIds = imageViewModel.imageIDs.observeAsState()
+    val imageLoading = imageViewModel.loading.observeAsState(initial = true)
 
     Log.d("publicationsId", "${publicationsId.value}")
 
     LaunchedEffect(publicationViewModel) {
         publicationViewModel.getRecentPublicationsId()
     }
-    // Observe the student image LiveData
-    val publicationImage = imageViewModel.publicationImage.observeAsState()
 
-    // Ensure the image is only downloaded once
-    LaunchedEffect(cif) {
-        imageViewModel.downloadPublicationImage(1L)
+    // Ensure the images are only downloaded once
+    LaunchedEffect(publicationsId.value) {
+        publicationsId.value?.let { ids ->
+            if (ids.isNotEmpty()) {
+                imageViewModel.getImagesForPublications(ids)
+            }
+        }
     }
-
-    // For demo purposes, using the same image multiple times
-    val images = publicationImage.value?.let { listOf(it, it, it, it, it, it) } ?: listOf()
 
     Column(
         modifier = Modifier
@@ -64,22 +65,24 @@ fun MenuScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        if (isLoading.value == true) {
+        if (isLoading.value == true || imageLoading.value == true) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {
-            Section(title = "Nuestros destacados", images = images)
-            Section(title = "Sugerencias de hoy", images = images)
-            Section(title = "Novedades de tus seguidos", images = images)
-            Section(title = "Añadidos recientemente", images = images)
+            Section(title = "Nuestros destacados", imageIds = imageIds.value ?: emptyList())
+            Section(title = "Sugerencias de hoy", imageIds = imageIds.value ?: emptyList())
+            Section(title = "Novedades de tus seguidos", imageIds = imageIds.value ?: emptyList())
+            Section(title = "Añadidos recientemente", imageIds = imageIds.value ?: emptyList())
         }
     }
 }
 
 @Composable
-fun Section(title: String, images: List<Bitmap>) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 8.dp)) {
+fun Section(title: String, imageIds: List<Long>) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -93,13 +96,13 @@ fun Section(title: String, images: List<Bitmap>) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(images) { image ->
-                val painter = rememberImagePainter(data = image)
+            items(imageIds) { imageId ->
+                val painter = rememberImagePainter(data = "https://example.com/image/$imageId")
                 Image(
                     painter = painter,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(200.dp)  // aqui se cambia el tamaño de las imagenes
+                        .size(200.dp)
                         .padding(5.dp),
                     contentScale = ContentScale.Crop
                 )

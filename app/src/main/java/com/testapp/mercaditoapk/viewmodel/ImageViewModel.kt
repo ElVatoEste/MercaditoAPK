@@ -1,6 +1,7 @@
 package com.testapp.mercaditoapk.viewmodel
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,6 +29,9 @@ class ImageViewModel : ViewModel() {
     private val _imageIDs = MutableLiveData<List<Long>>()
     val imageIDs: LiveData<List<Long>> get() = _imageIDs
 
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> get() = _loading
+
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
@@ -39,6 +43,43 @@ class ImageViewModel : ViewModel() {
             }.onFailure {
                 _errorMessage.value = it.message
             }
+        }
+    }
+
+    fun getImagesForPublications(publicationIds: List<Long>) {
+        viewModelScope.launch {
+            _loading.value = true
+            val allImageIds = mutableListOf<Long>()
+            for (id in publicationIds) {
+                val result = repositoryImage.getImagesIDs(id)
+                result.fold(
+                    onSuccess = {
+                        allImageIds.addAll(it)
+                        Log.d("ImageViewModel", "Image IDs for publication $id: $it")
+                    },
+                    onFailure = {
+                        _errorMessage.value = it.message
+                    }
+                )
+            }
+            _imageIDs.value = allImageIds
+            Log.d("ImageViewModel", "All image IDs: $allImageIds")
+            _loading.value = false
+        }
+    }
+
+    fun getImagesIDs(publicationId: Long) {
+        viewModelScope.launch {
+            val result = repositoryImage.getImagesIDs(publicationId)
+            result.fold(
+                onSuccess = {
+                    _imageIDs.value = it
+                    Log.d("ImageViewModel", "Image IDs for publication $publicationId: $it")
+                },
+                onFailure = {
+                    _errorMessage.value = it.message
+                }
+            )
         }
     }
 
@@ -73,20 +114,6 @@ class ImageViewModel : ViewModel() {
             result.fold(
                 onSuccess = {
                     _deleteResult.value = it
-                },
-                onFailure = {
-                    _errorMessage.value = it.message
-                }
-            )
-        }
-    }
-
-    fun getImagesIDs(publicationId: Long) {
-        viewModelScope.launch {
-            val result = repositoryImage.getImagesIDs(publicationId)
-            result.fold(
-                onSuccess = {
-                    _imageIDs.value = it
                 },
                 onFailure = {
                     _errorMessage.value = it.message
