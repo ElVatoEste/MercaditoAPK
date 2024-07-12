@@ -6,7 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,6 +30,7 @@ import com.testapp.mercaditoapk.viewmodel.ImageViewModel
 fun MenuScreenPreview() {
     MenuScreen(navController = rememberNavController(), cif = "21011754")
 }
+
 @Composable
 fun MenuScreen(
     navController: NavController,
@@ -65,16 +66,16 @@ fun MenuScreen(
         if (isLoading.value == true || imageLoading.value == true) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {
-            Section(title = "Nuestros destacados", images = images, navController = navController)
-            Section(title = "Sugerencias de hoy", images = images, navController = navController)
-            Section(title = "Novedades de tus seguidos", images = images, navController = navController)
-            Section(title = "Añadidos recientemente", images = images, navController = navController)
+            Section(title = "Nuestros destacados", images = images, publicationIds = publicationsId.value ?: emptyList(), navController = navController)
+            Section(title = "Sugerencias de hoy", images = images, publicationIds = publicationsId.value ?: emptyList(), navController = navController)
+            Section(title = "Novedades de tus seguidos", images = images, publicationIds = publicationsId.value ?: emptyList(), navController = navController)
+            Section(title = "Añadidos recientemente", images = images, publicationIds = publicationsId.value ?: emptyList(), navController = navController)
         }
     }
 }
 
 @Composable
-fun Section(title: String, images: List<Bitmap>, navController: NavController) {
+fun Section(title: String, images: List<Bitmap>, publicationIds: List<Long>, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -97,7 +98,8 @@ fun Section(title: String, images: List<Bitmap>, navController: NavController) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(images) { bitmap ->
+            itemsIndexed(images) { index, bitmap ->
+                val publicationId = publicationIds.getOrNull(index) ?: 0L
                 Image(
                     painter = rememberImagePainter(bitmap),
                     contentDescription = null,
@@ -105,8 +107,6 @@ fun Section(title: String, images: List<Bitmap>, navController: NavController) {
                         .size(200.dp)
                         .padding(5.dp)
                         .clickable {
-                            // Navegar a la pantalla de detalle cuando se hace clic en la imagen
-                            val publicationId = 123 // Reemplaza con la lógica para obtener el ID correcto
                             navController.navigate("detail_screen/${publicationId}")
                         },
                     contentScale = ContentScale.Crop
