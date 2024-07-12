@@ -1,5 +1,3 @@
-package com.testapp.mercaditoapk.screen
-
 import PublicationViewModel
 import android.graphics.Bitmap
 import android.util.Log
@@ -23,7 +21,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.testapp.mercaditoapk.viewmodel.ImageViewModel
-import com.testapp.mercaditoapk.viewmodel.StudentViewModel
 
 @Preview(showBackground = true)
 @Composable
@@ -38,10 +35,14 @@ fun MenuScreen(
     imageViewModel: ImageViewModel = viewModel(),
     publicationViewModel: PublicationViewModel = viewModel()
 ) {
-
+    // Observe the recent publications ID LiveData
     val publicationsId = publicationViewModel.recentPublicationsId.observeAsState()
 
     Log.d("publicationsId", "${publicationsId.value}")
+
+    LaunchedEffect(publicationViewModel) {
+        publicationViewModel.getRecentPublicationsId()
+    }
     // Observe the student image LiveData
     val publicationImage = imageViewModel.publicationImage.observeAsState()
 
@@ -68,7 +69,9 @@ fun MenuScreen(
 
 @Composable
 fun Section(title: String, images: List<Bitmap>) {
-    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = 8.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -96,5 +99,3 @@ fun Section(title: String, images: List<Bitmap>) {
         }
     }
 }
-
-

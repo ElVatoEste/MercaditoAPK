@@ -17,9 +17,6 @@ class PublicationViewModel: ViewModel() {
     private val _recentPublications = MutableLiveData<List<Publication>>()
     val recentPublications: LiveData<List<Publication>> get() = _recentPublications
 
-    private val _recentPublicationsId = MutableLiveData<List<Long>>()
-    val recentPublicationsId: LiveData<List<Long>> get() = _recentPublicationsId
-
     private val _featuredPublications = MutableLiveData<List<Publication>>()
     val featuredPublications: LiveData<List<Publication>> get() = _featuredPublications
 
@@ -29,8 +26,26 @@ class PublicationViewModel: ViewModel() {
     private val _publication = MutableLiveData<Publication?>()
     val publication: LiveData<Publication?> get() = _publication
 
+    private val _recentPublicationsId = MutableLiveData<List<Long>>()
+    val recentPublicationsId: LiveData<List<Long>> get() = _recentPublicationsId
+
     private val _resultMessage = MutableLiveData<String>()
     val resultMessage: LiveData<String> get() = _resultMessage
+
+    init {
+        getRecentPublicationsId()
+    }
+
+    fun getRecentPublicationsId() {
+        viewModelScope.launch {
+            val result = repository.getRecentPublicationsId()
+            result.onSuccess {
+                _recentPublicationsId.value = it
+            }.onFailure {
+                _resultMessage.value = it.message
+            }
+        }
+    }
 
     fun getAllPublications() {
         viewModelScope.launch {

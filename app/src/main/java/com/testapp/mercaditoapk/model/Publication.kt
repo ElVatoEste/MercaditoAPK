@@ -17,23 +17,5 @@ data class Publication(
     val purchaseList: Purchase
     */
 )
-/*val cif: Long,
-val name: String,
-val surname: String,
-val email: String,
-val password: String,
-val phoneNumber: String,
-val personalDescription: String,
-val following: Set<Publication>?,
-val followers: Set<Publication>?*/
-
-/*
-    val publicationList: List<Publication>?,
-    val sentMessages: List<Messaging>?,
-    val receivedMessages: List<Messaging>?,
-    val ticketList: List<Ticket>?,
-    val mainCommentList: List<MainComment>?,
-    val purchaseList: List<Purchase>?
-*/
 
 
