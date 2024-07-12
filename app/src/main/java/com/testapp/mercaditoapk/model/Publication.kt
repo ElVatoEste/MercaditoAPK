@@ -1,7 +1,12 @@
 package com.testapp.mercaditoapk.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+
+@Entity
 data class Publication(
+    @PrimaryKey
     val id: Long,
     val studentCIF: Long,
     val imageList: List<Image>,

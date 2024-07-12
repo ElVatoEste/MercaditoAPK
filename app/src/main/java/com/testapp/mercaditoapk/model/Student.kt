@@ -1,7 +1,11 @@
 package com.testapp.mercaditoapk.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity
 data class Student(
+    @PrimaryKey
     val cif: Long,
     val name: String,
     val surname: String,
