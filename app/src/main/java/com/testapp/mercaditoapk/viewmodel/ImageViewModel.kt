@@ -29,8 +29,8 @@ class ImageViewModel : ViewModel() {
     private val _publicationImage = MutableLiveData<Bitmap>()
     val publicationImage: LiveData<Bitmap> get() = _publicationImage
 
-    private val _publicationImages = MutableLiveData<List<Bitmap>>()
-    val publicationImages: LiveData<List<Bitmap>> get() = _publicationImages
+    private val _publicationImages = MutableLiveData<List<Bitmap>?>()
+    val publicationImages: LiveData<List<Bitmap>?> get() = _publicationImages
 
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> get() = _loading
