@@ -1,5 +1,6 @@
 package com.testapp.mercaditoapk.viewmodel
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,8 +13,8 @@ import okhttp3.ResponseBody
 class ImageViewModel : ViewModel() {
     private val repositoryImage = RepositoryImage()
 
-    private val _studentImage = MutableLiveData<ResponseBody?>()
-    val studentImage: LiveData<ResponseBody?> get() = _studentImage
+    private val _studentImage = MutableLiveData<Bitmap?>()
+    val studentImage: LiveData<Bitmap?> get() = _studentImage
 
     private val _publicationImage = MutableLiveData<ResponseBody?>()
     val publicationImage: LiveData<ResponseBody?> get() = _publicationImage
@@ -33,14 +34,11 @@ class ImageViewModel : ViewModel() {
     fun downloadStudentImage(studentId: Long) {
         viewModelScope.launch {
             val result = repositoryImage.downloadStudentImage(studentId)
-            result.fold(
-                onSuccess = {
-                    _studentImage.value = it
-                },
-                onFailure = {
-                    _errorMessage.value = it.message
-                }
-            )
+            result.onSuccess {
+                _studentImage.value = it
+            }.onFailure {
+                _errorMessage.value = it.message
+            }
         }
     }
 

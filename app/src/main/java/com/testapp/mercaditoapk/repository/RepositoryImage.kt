@@ -1,27 +1,34 @@
 package com.testapp.mercaditoapk.repository
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import com.testapp.mercaditoapk.remote.ApiAdapter
 import com.testapp.mercaditoapk.remote.ApiImage
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
+import java.io.InputStream
 
 class RepositoryImage {
     private val apiImage: ApiImage by lazy {
         ApiAdapter.getInstance().create(ApiImage::class.java)
     }
 
-    suspend fun downloadStudentImage(studentId: Long): Result<ResponseBody?> {
+    suspend fun downloadStudentImage(studentId: Long): Result<Bitmap?> {
         return try {
             val response: Response<ResponseBody> = apiImage.downloadStudentImage(studentId)
             if (response.isSuccessful) {
-                Result.success(response.body())
+                response.body()?.let { responseBody ->
+                    val inputStream: InputStream = responseBody.byteStream()
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    Result.success(bitmap)
+                } ?: Result.failure(Exception("Failed to decode image"))
             } else {
-                Result.failure(Exception("Failed to download student image: ${response.message()}"))
+                Result.failure(Exception("Failed to fetch image: ${response.message()}"))
             }
         } catch (e: Exception) {
-            Log.d("error", "${e.message}")
+            Log.d("error", e.message ?: "Unknown error")
             Result.failure(e)
         }
     }
