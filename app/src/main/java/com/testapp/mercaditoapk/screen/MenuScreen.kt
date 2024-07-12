@@ -5,6 +5,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -16,13 +18,18 @@ import coil.compose.rememberImagePainter
 import com.testapp.mercaditoapk.viewmodel.ImageViewModel
 import okhttp3.ResponseBody
 
-
 @Composable
 fun MenuScreen(
     navController: NavController,
     cif: String,
     imageViewModel: ImageViewModel = viewModel()
 ) {
+    val studentImage = imageViewModel.studentImage.observeAsState().value
+
+    LaunchedEffect(Unit) {
+        imageViewModel.downloadStudentImage(cif.toLong())
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -44,11 +51,11 @@ fun MenuScreen(
             val painter = rememberImagePainter(data = it)
             Image(
                 painter = painter,
-                contentDescription = null, // Optional content description
+                contentDescription = null,
                 modifier = Modifier
-                    .size(200.dp) // Adjust size as needed
+                    .size(200.dp)
                     .padding(vertical = 16.dp),
-                contentScale = ContentScale.Crop // Adjust content scale as needed
+                contentScale = ContentScale.Crop
             )
         }
     }
