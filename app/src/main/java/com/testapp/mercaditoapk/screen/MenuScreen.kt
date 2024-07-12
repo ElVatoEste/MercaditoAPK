@@ -1,3 +1,5 @@
+package com.testapp.mercaditoapk.screen
+
 import PublicationViewModel
 import android.graphics.Bitmap
 import android.util.Log
