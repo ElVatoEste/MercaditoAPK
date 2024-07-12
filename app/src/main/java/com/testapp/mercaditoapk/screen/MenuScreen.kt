@@ -30,14 +30,12 @@ import com.testapp.mercaditoapk.viewmodel.ImageViewModel
 fun MenuScreenPreview() {
     MenuScreen(navController = rememberNavController(), cif = "21011754")
 }
-
 @Composable
 fun MenuScreen(
     navController: NavController,
     cif: String,
     imageViewModel: ImageViewModel = viewModel()
 ) {
-    // Observe the recent publications ID LiveData
     val publicationViewModel = viewModel<PublicationViewModel>()
     val publicationsId = publicationViewModel.recentPublicationsId.observeAsState()
     val isLoading = publicationViewModel.loading.observeAsState(initial = true)
@@ -108,7 +106,6 @@ fun Section(title: String, images: List<Bitmap>, navController: NavController) {
                         .padding(5.dp)
                         .clickable {
                             // Navegar a la pantalla de detalle cuando se hace clic en la imagen
-                            // Aquí necesitas obtener el publicationId correspondiente a esta imagen
                             val publicationId = 123 // Reemplaza con la lógica para obtener el ID correcto
                             navController.navigate("detail_screen/${publicationId}")
                         },
