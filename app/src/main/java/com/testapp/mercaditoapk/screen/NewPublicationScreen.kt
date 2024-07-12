@@ -20,17 +20,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.testapp.mercaditoapk.R
 import com.testapp.mercaditoapk.model.AvailabilityType
-import com.testapp.mercaditoapk.network.NetworkModule
+import com.testapp.mercaditoapk.model.Image
 import com.testapp.mercaditoapk.model.PublicationDTO
+import com.testapp.mercaditoapk.network.NetworkModule
 import kotlinx.coroutines.launch
-
-fun String.toAvailabilityType(): AvailabilityType? {
-    return try {
-        AvailabilityType.valueOf(this.uppercase())
-    } catch (e: IllegalArgumentException) {
-        null
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
@@ -46,14 +39,13 @@ fun CrearPublicacionScreen(navController: NavController) {
     val categoryId = remember { mutableStateOf("") }
     val price = remember { mutableStateOf("") }
     val isFeatured = remember { mutableStateOf(false) }
-    val availabilityType = remember { mutableStateOf("") }
+    val availabilityType = remember { mutableStateOf(AvailabilityType.AVAILABLE) }
     val observations = remember { mutableStateOf("") }
     val isVisible = remember { mutableStateOf(true) }
 
     val titleError = remember { mutableStateOf(false) }
     val descriptionError = remember { mutableStateOf(false) }
     val priceError = remember { mutableStateOf(false) }
-    val availabilityTypeError = remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -156,24 +148,6 @@ fun CrearPublicacionScreen(navController: NavController) {
         }
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
-            value = availabilityType.value,
-            onValueChange = { availabilityType.value = it },
-            label = { Text("Tipo de Disponibilidad") },
-            isError = availabilityTypeError.value,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White, shape = RoundedCornerShape(16.dp)),
-            shape = RoundedCornerShape(16.dp)
-        )
-        if (availabilityTypeError.value) {
-            Text(
-                text = "Este campo es obligatorio",
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        TextField(
             value = observations.value,
             onValueChange = { observations.value = it },
             label = { Text("Observaciones") },
@@ -213,11 +187,9 @@ fun CrearPublicacionScreen(navController: NavController) {
                     title.value,
                     description.value,
                     price.value,
-                    availabilityType.value,
                     titleError,
                     descriptionError,
-                    priceError,
-                    availabilityTypeError
+                    priceError
                 )
                 if (isValid) {
                     val publicationDTO = PublicationDTO(
@@ -226,10 +198,9 @@ fun CrearPublicacionScreen(navController: NavController) {
                         imageList = emptyList(), // Asignar la lista de imágenes según sea necesario
                         title = title.value,
                         description = description.value,
-                        categoryId = categoryId.value.toLong(),
                         price = price.value.toDouble(),
                         isFeatured = isFeatured.value,
-                        availabilityType = availabilityType.value.toAvailabilityType() ?: AvailabilityType.NOT_AVAILABLE,
+                        availabilityType = availabilityType.value,
                         observations = observations.value,
                         isVisible = isVisible.value
                     )
@@ -256,16 +227,13 @@ fun validateInputs(
     title: String,
     description: String,
     price: String,
-    availabilityType: String,
     titleError: MutableState<Boolean>,
     descriptionError: MutableState<Boolean>,
-    priceError: MutableState<Boolean>,
-    availabilityTypeError: MutableState<Boolean>
+    priceError: MutableState<Boolean>
 ): Boolean {
     titleError.value = title.isBlank()
     descriptionError.value = description.isBlank()
     priceError.value = price.isBlank()
-    availabilityTypeError.value = availabilityType.isBlank()
 
-    return !(titleError.value || descriptionError.value || priceError.value || availabilityTypeError.value)
+    return !(titleError.value || descriptionError.value || priceError.value)
 }

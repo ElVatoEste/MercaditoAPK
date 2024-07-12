@@ -6,7 +6,6 @@ data class PublicationDTO(
     val imageList: List<Image>,
     val title: String,
     val description: String,
-    val categoryId: Long,
     val price: Double,
     val isFeatured: Boolean,
     val availabilityType: AvailabilityType,
