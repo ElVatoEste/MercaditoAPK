@@ -20,5 +20,14 @@ interface ApiPublication {
 
     @DELETE("publications/{id}")
     suspend fun deletePublication(@Path("id") id: Long): Response<String>
+
+    @GET("publications/recent")
+    suspend fun getRecentPublications(): Response<List<Publication>>
+
+    @GET("publications/random-featured")
+    suspend fun getRandomFeaturedPublications(): Response<List<Publication>>
+
+    @GET("publications/random")
+    suspend fun getRandomPublications(): Response<List<Publication>>
 }
 

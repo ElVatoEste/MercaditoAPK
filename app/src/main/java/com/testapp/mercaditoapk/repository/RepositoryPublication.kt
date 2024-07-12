@@ -41,6 +41,58 @@ class RepositoryPublication {
         }
     }
 
+    suspend fun getRecentPublications(): Result<List<Publication>> {
+        return try {
+            val response: Response<List<Publication>> = apiPublication.getRecentPublications()
+            if (response.isSuccessful) {
+                Result.success(response.body() ?: emptyList())
+            } else {
+                Result.failure(Exception("Failed to fetch publication by ID"))
+            }
+        } catch (e: Exception) {
+            Log.d("error", e.message ?: "Unknown error")
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getRandomFeaturedPublications(): Result<List<Publication>> {
+        return try {
+            val response: Response<List<Publication>> = apiPublication.getRandomFeaturedPublications()
+            if (response.isSuccessful) {
+                val publications : List<Publication>? = response.body()
+                val mutableList = publications?.toMutableList()
+                mutableList?.shuffle()
+                val shuffledList: List<Publication> = mutableList!!.toList()
+                val finalResponse : Response<List<Publication>> = Response.success(shuffledList.take(6))
+                Result.success(finalResponse.body() ?: emptyList())
+            } else {
+                Result.failure(Exception("Failed to fetch publication by ID"))
+            }
+        } catch (e: Exception) {
+            Log.d("error", e.message ?: "Unknown error")
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getRandomPublications(): Result<List<Publication>> {
+        return try {
+            val response: Response<List<Publication>> = apiPublication.getRandomPublications()
+            if (response.isSuccessful) {
+                val publications : List<Publication>? = response.body()
+                val mutableList = publications?.toMutableList()
+                mutableList?.shuffle()
+                val shuffledList: List<Publication> = mutableList!!.toList()
+                val finalResponse : Response<List<Publication>> = Response.success(shuffledList.take(6))
+                Result.success(finalResponse.body() ?: emptyList())
+            } else {
+                Result.failure(Exception("Failed to fetch publication by ID"))
+            }
+        } catch (e: Exception) {
+            Log.d("error", e.message ?: "Unknown error")
+            Result.failure(e)
+        }
+    }
+
     suspend fun createPublication(publicationDTO: PublicationDTO): Result<String> {
         Log.d("Publication repository", "${publicationDTO.id}")
 
