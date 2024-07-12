@@ -17,9 +17,6 @@ class ImageViewModel : ViewModel() {
     private val _studentImage = MutableLiveData<Bitmap?>()
     val studentImage: LiveData<Bitmap?> get() = _studentImage
 
-    private val _publicationImage = MutableLiveData<Bitmap?>()
-    val publicationImage: LiveData<Bitmap?> get() = _publicationImage
-
     private val _uploadResult = MutableLiveData<String>()
     val uploadResult: LiveData<String> get() = _uploadResult
 
@@ -28,6 +25,9 @@ class ImageViewModel : ViewModel() {
 
     private val _imageIDs = MutableLiveData<List<Long>>()
     val imageIDs: LiveData<List<Long>> get() = _imageIDs
+
+    private val _publicationImage = MutableLiveData<Bitmap>()
+    val publicationImage: LiveData<Bitmap> get() = _publicationImage
 
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> get() = _loading
@@ -55,7 +55,6 @@ class ImageViewModel : ViewModel() {
                 result.fold(
                     onSuccess = {
                         allImageIds.addAll(it)
-                        Log.d("ImageViewModel", "Image IDs for publication $id: $it")
                     },
                     onFailure = {
                         _errorMessage.value = it.message
@@ -63,7 +62,7 @@ class ImageViewModel : ViewModel() {
                 )
             }
             _imageIDs.value = allImageIds
-            Log.d("ImageViewModel", "All image IDs: $allImageIds")
+            downloadImages(allImageIds)
             _loading.value = false
         }
     }
@@ -80,6 +79,19 @@ class ImageViewModel : ViewModel() {
                     _errorMessage.value = it.message
                 }
             )
+        }
+    }
+
+    private fun downloadImages(imageIds: List<Long>) {
+        viewModelScope.launch {
+            for (imageId in imageIds) {
+                val result = repositoryImage.downloadPublicationImage(imageId)
+                result.onSuccess {
+                    _publicationImage.value = it
+                }.onFailure {
+                    _errorMessage.value = it.message
+                }
+            }
         }
     }
 

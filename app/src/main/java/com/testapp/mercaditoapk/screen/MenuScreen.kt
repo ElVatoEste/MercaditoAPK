@@ -59,6 +59,10 @@ fun MenuScreen(
         }
     }
 
+    // Extract the value from State<Bitmap?> to Bitmap?
+    val imagesState = imageViewModel.publicationImage.observeAsState()
+    val images = imagesState.value?.let { listOf(it) } ?: emptyList()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -68,16 +72,16 @@ fun MenuScreen(
         if (isLoading.value == true || imageLoading.value == true) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {
-            Section(title = "Nuestros destacados", imageIds = imageIds.value ?: emptyList())
-            Section(title = "Sugerencias de hoy", imageIds = imageIds.value ?: emptyList())
-            Section(title = "Novedades de tus seguidos", imageIds = imageIds.value ?: emptyList())
-            Section(title = "Añadidos recientemente", imageIds = imageIds.value ?: emptyList())
+            Section(title = "Nuestros destacados", images = images)
+            Section(title = "Sugerencias de hoy", images = images)
+            Section(title = "Novedades de tus seguidos", images = images)
+            Section(title = "Añadidos recientemente", images = images)
         }
     }
 }
 
 @Composable
-fun Section(title: String, imageIds: List<Long>) {
+fun Section(title: String, images: List<Bitmap>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -96,13 +100,13 @@ fun Section(title: String, imageIds: List<Long>) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(imageIds) { imageId ->
-                val painter = rememberImagePainter(data = "https://example.com/image/$imageId")
+            items(images) { image ->
+                val painter = rememberImagePainter(data = image)
                 Image(
                     painter = painter,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(200.dp)
+                        .size(200.dp)  // aquí se cambia el tamaño de las imágenes
                         .padding(5.dp),
                     contentScale = ContentScale.Crop
                 )
