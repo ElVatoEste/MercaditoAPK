@@ -19,6 +19,8 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.testapp.mercaditoapk.viewmodel.ImageViewModel
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 
 @Composable
 fun DetailScreen(
@@ -29,7 +31,6 @@ fun DetailScreen(
 ) {
     val publicationDetails = publicationViewModel.publication.observeAsState()
     val isLoading = publicationViewModel.loading.observeAsState(initial = true)
-    val imageLoading = imageViewModel.loading.observeAsState(initial = true)
     val publicationImage = imageViewModel.publicationImage.observeAsState()
 
     LaunchedEffect(publicationId) {
@@ -42,15 +43,16 @@ fun DetailScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        if (isLoading.value == true || imageLoading.value == true) {
+        if (isLoading.value || publicationImage.value == null) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {
             publicationDetails.value?.let { publication ->
                 Text(text = publication.title)
                 Spacer(modifier = Modifier.height(8.dp))
                 publicationImage.value?.let { bitmap ->
+                    val imageBitmap = bitmap.asImageBitmap()
                     Image(
-                        bitmap = bitmap.asImageBitmap(),
+                        bitmap = imageBitmap,
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxWidth()
