@@ -32,8 +32,8 @@ fun DetailScreen(
     val publicationImage = imageViewModel.publicationImage.observeAsState()
 
     LaunchedEffect(publicationId) {
-        publicationViewModel.getPublicationById(publicationId)
-        imageViewModel.downloadPublicationImage(publicationId)
+        publicationViewModel.getPublicationById(publicationId-1)
+        imageViewModel.downloadPublicationImage(publicationId-1)
     }
 
     Column(

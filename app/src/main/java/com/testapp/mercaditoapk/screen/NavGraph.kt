@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.testapp.mercaditoapk.screen.CrearCuentaScreen
+import com.testapp.mercaditoapk.screen.CrearPublicacionScreen
 import com.testapp.mercaditoapk.screen.DetailScreen
 import com.testapp.mercaditoapk.screen.InicioScreen
 import com.testapp.mercaditoapk.screen.LoginScreen
@@ -34,6 +35,9 @@ fun NavGraph(
         }
         composable("crear_cuenta") {
             CrearCuentaScreen(navController)
+        }
+        composable("publicacionaadd"){
+            CrearPublicacionScreen(navController)
         }
         composable(
             route = "registrar/{cif}/{nombres}/{apellidos}/{correo}/{contrasena}",
