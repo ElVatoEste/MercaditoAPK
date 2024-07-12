@@ -1,6 +1,8 @@
 package com.testapp.mercaditoapk.screen
 
+import PublicationViewModel
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -21,6 +23,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.testapp.mercaditoapk.viewmodel.ImageViewModel
+import com.testapp.mercaditoapk.viewmodel.StudentViewModel
 
 @Preview(showBackground = true)
 @Composable
@@ -32,14 +35,19 @@ fun MenuScreenPreview() {
 fun MenuScreen(
     navController: NavController,
     cif: String,
-    imageViewModel: ImageViewModel = viewModel()
+    imageViewModel: ImageViewModel = viewModel(),
+    publicationViewModel: PublicationViewModel = viewModel()
 ) {
+
+    val publicationsId = publicationViewModel.recentPublicationsId.observeAsState()
+
+    Log.d("publicationsId", "${publicationsId.value}")
     // Observe the student image LiveData
-    val publicationImage = imageViewModel.studentImage.observeAsState()
+    val publicationImage = imageViewModel.publicationImage.observeAsState()
 
     // Ensure the image is only downloaded once
     LaunchedEffect(cif) {
-        imageViewModel.downloadPublicationImage(1)
+        imageViewModel.downloadPublicationImage(1L)
     }
 
     // For demo purposes, using the same image multiple times

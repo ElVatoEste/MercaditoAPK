@@ -6,28 +6,31 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiPublication {
-    @GET("publications")
+    @GET("/publication/all")
     suspend fun getAllPublications(): Response<List<Publication>>
 
-    @GET("publications/{id}")
+    @GET("/publication/find/{id}")
     suspend fun getPublicationById(@Path("id") id: Long): Response<Publication>
 
-    @POST("publications")
+    @POST("/publication/create")
     suspend fun createPublication(@Body publicationDTO: PublicationDTO): Response<String>
 
-    @PUT("publications")
+    @PUT("/publication/update")
     suspend fun updatePublication(@Body publicationDTO: PublicationDTO): Response<String>
 
-    @DELETE("publications/{id}")
+    @DELETE("/publication/delete/{id}")
     suspend fun deletePublication(@Path("id") id: Long): Response<String>
 
-    @GET("publications/recent")
+    @GET("/publication/getMostRecentPublications")
     suspend fun getRecentPublications(): Response<List<Publication>>
 
-    @GET("publications/random-featured")
+    @GET("/publication/getMostRecentPublicationsId")
+    suspend fun getRecentPublicationsId(): Response<List<Long>>
+
+    @GET("/publication/getRandomFeaturedPublications")
     suspend fun getRandomFeaturedPublications(): Response<List<Publication>>
 
-    @GET("publications/random")
+    @GET("publication/getRandomPublications")
     suspend fun getRandomPublications(): Response<List<Publication>>
 }
 

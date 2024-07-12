@@ -27,6 +27,20 @@ class RepositoryPublication {
         }
     }
 
+    suspend fun getRecentPublicationsId(): Result<List<Long>> {
+        return try {
+            val response: Response<List<Long>> = apiPublication.getRecentPublicationsId()
+            if (response.isSuccessful) {
+                Result.success(response.body() ?: emptyList())
+            } else {
+                Result.failure(Exception("Failed to fetch publications"))
+            }
+        } catch (e: Exception) {
+            Log.d("error", e.message ?: "Unknown error")
+            Result.failure(e)
+            }
+    }
+
     suspend fun getPublicationById(id: Long): Result<Publication?> {
         return try {
             val response: Response<Publication> = apiPublication.getPublicationById(id)
