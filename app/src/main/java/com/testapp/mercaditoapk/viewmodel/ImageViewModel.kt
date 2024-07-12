@@ -46,11 +46,10 @@ class ImageViewModel : ViewModel() {
         viewModelScope.launch {
             val result = repositoryImage.downloadPublicationImage(imageId)
             result.onSuccess {
-                    _publicationImage.value = it
-                }.onFailure {
-                    _errorMessage.value = it.message
-                }
-            )
+                _publicationImage.value = it
+            }.onFailure {
+                _errorMessage.value = it.message
+            }
         }
     }
 
