@@ -33,19 +33,24 @@ class RepositoryImage {
         }
     }
 
-    suspend fun downloadPublicationImage(imageId: Long): Result<ResponseBody?> {
+    suspend fun downloadPublicationImage(imageId: Long): Result<Bitmap?> {
         return try {
             val response: Response<ResponseBody> = apiImage.downloadPublicationImage(imageId)
             if (response.isSuccessful) {
-                Result.success(response.body())
+                response.body()?.let { responseBody ->
+                    val inputStream: InputStream = responseBody.byteStream()
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    Result.success(bitmap)
+                } ?: Result.failure(Exception("Failed to decode image"))
             } else {
-                Result.failure(Exception("Failed to download publication image: ${response.message()}"))
+                Result.failure(Exception("Failed to fetch image: ${response.message()}"))
             }
         } catch (e: Exception) {
-            Log.d("error", "${e.message}")
+            Log.d("error", e.message ?: "Unknown error")
             Result.failure(e)
         }
     }
+
 
     suspend fun uploadImage(files: List<MultipartBody.Part>, idPublication: Long, idStudent: Long): Result<String> {
         return try {
@@ -75,9 +80,9 @@ class RepositoryImage {
         }
     }
 
-    suspend fun getImagesIDs(publicationId: Long): Result<List<Int>> {
+    suspend fun getImagesIDs(publicationId: Long): Result<List<Long>> {
         return try {
-            val response: Response<List<Int>> = apiImage.getImagesIDs(publicationId)
+            val response: Response<List<Long>> = apiImage.getImagesIDs(publicationId)
             if (response.isSuccessful) {
                 Result.success(response.body() ?: emptyList())
             } else {

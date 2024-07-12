@@ -3,20 +3,30 @@ package com.testapp.mercaditoapk.screen
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.testapp.mercaditoapk.viewmodel.ImageViewModel
-import okhttp3.ResponseBody
+
+@Preview(showBackground = true)
+@Composable
+fun MenuScreenPreview() {
+    MenuScreen(navController = rememberNavController(), cif = "21011754")
+}
 
 @Composable
 fun MenuScreen(
@@ -24,39 +34,59 @@ fun MenuScreen(
     cif: String,
     imageViewModel: ImageViewModel = viewModel()
 ) {
-    val studentImage = imageViewModel.studentImage.observeAsState().value
+    // Observe the student image LiveData
+    val publicationImage = imageViewModel.studentImage.observeAsState()
 
-    LaunchedEffect(Unit) {
-        imageViewModel.downloadStudentImage(cif.toLong())
+    // Ensure the image is only downloaded once
+    LaunchedEffect(cif) {
+        imageViewModel.downloadPublicationImage(1)
     }
+
+    // For demo purposes, using the same image multiple times
+    val images = publicationImage.value?.let { listOf(it, it, it, it, it, it) } ?: listOf()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp)
     ) {
-        Text(text = "Menú Principal")
-        Text(text = "CIF: $cif")
+        Section(title = "Nuestros destacados", images = images)
+        Section(title = "Sugerencias de hoy", images = images)
+        Section(title = "Novedades de tus seguidos", images = images)
+        Section(title = "Añadidos recientemente", images = images)
+    }
+}
 
-        // Trigger downloading the image bytes
-        imageViewModel.downloadStudentImage(cif.toLong())
-
-        // Observe the student image LiveData
-        val studentImage: Bitmap? = imageViewModel.studentImage.value
-
-        // Display the image if it's available
-        studentImage?.let {
-            val painter = rememberImagePainter(data = it)
-            Image(
-                painter = painter,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(vertical = 16.dp),
-                contentScale = ContentScale.Crop
-            )
+@Composable
+fun Section(title: String, images: List<Bitmap>) {
+    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = title)
+            Text(text = "Ver todo", color = androidx.compose.ui.graphics.Color.Blue)
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(images) { image ->
+                val painter = rememberImagePainter(data = image)
+                Image(
+                    painter = painter,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(200.dp)  // aqui se cambia el tamaño de las imagenes
+                        .padding(5.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
     }
 }
+
+

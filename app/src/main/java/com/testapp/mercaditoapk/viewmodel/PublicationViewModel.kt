@@ -15,6 +15,7 @@ class PublicationViewModel: ViewModel() {
 
     private val _publications = MutableLiveData<List<Publication>>()
 
+
     val publications: LiveData<List<Publication>> get() = _publications
 
     private val _publication = MutableLiveData<Publication?>()
