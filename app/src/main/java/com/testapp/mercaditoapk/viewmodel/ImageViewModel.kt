@@ -45,11 +45,9 @@ class ImageViewModel : ViewModel() {
     fun downloadPublicationImage(imageId: Long) {
         viewModelScope.launch {
             val result = repositoryImage.downloadPublicationImage(imageId)
-            result.fold(
-                onSuccess = {
+            result.onSuccess {
                     _publicationImage.value = it
-                },
-                onFailure = {
+                }.onFailure {
                     _errorMessage.value = it.message
                 }
             )
