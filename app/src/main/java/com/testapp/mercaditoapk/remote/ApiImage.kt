@@ -26,5 +26,5 @@ interface ApiImage {
     suspend fun deleteImage(@Path("id") id: Long): Response<String>
 
     @GET("/image/getImagesIDs/{publicationId}")
-    suspend fun getImagesIDs(@Path("publicationId") id: Long): Response<List<Int>>
+    suspend fun getImagesIDs(@Path("publicationId") id: Long): Response<List<Long>>
 }

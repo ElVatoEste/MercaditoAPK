@@ -16,8 +16,8 @@ class ImageViewModel : ViewModel() {
     private val _studentImage = MutableLiveData<Bitmap?>()
     val studentImage: LiveData<Bitmap?> get() = _studentImage
 
-    private val _publicationImage = MutableLiveData<ResponseBody?>()
-    val publicationImage: LiveData<ResponseBody?> get() = _publicationImage
+    private val _publicationImage = MutableLiveData<Bitmap?>()
+    val publicationImage: LiveData<Bitmap?> get() = _publicationImage
 
     private val _uploadResult = MutableLiveData<String>()
     val uploadResult: LiveData<String> get() = _uploadResult
@@ -25,8 +25,8 @@ class ImageViewModel : ViewModel() {
     private val _deleteResult = MutableLiveData<String>()
     val deleteResult: LiveData<String> get() = _deleteResult
 
-    private val _imageIDs = MutableLiveData<List<Int>>()
-    val imageIDs: LiveData<List<Int>> get() = _imageIDs
+    private val _imageIDs = MutableLiveData<List<Long>>()
+    val imageIDs: LiveData<List<Long>> get() = _imageIDs
 
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage

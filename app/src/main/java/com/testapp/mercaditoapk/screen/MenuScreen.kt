@@ -35,15 +35,15 @@ fun MenuScreen(
     imageViewModel: ImageViewModel = viewModel()
 ) {
     // Observe the student image LiveData
-    val studentImage = imageViewModel.studentImage.observeAsState()
+    val publicationImage = imageViewModel.studentImage.observeAsState()
 
     // Ensure the image is only downloaded once
     LaunchedEffect(cif) {
-        imageViewModel.downloadStudentImage(cif.toLong())
+        imageViewModel.downloadPublicationImage(1)
     }
 
     // For demo purposes, using the same image multiple times
-    val images = studentImage.value?.let { listOf(it, it, it, it, it, it) } ?: listOf()
+    val images = publicationImage.value?.let { listOf(it, it, it, it, it, it) } ?: listOf()
 
     Column(
         modifier = Modifier
@@ -88,3 +88,5 @@ fun Section(title: String, images: List<Bitmap>) {
         }
     }
 }
+
+
