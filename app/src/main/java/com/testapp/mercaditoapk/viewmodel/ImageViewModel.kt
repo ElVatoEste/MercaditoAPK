@@ -29,6 +29,9 @@ class ImageViewModel : ViewModel() {
     private val _publicationImage = MutableLiveData<Bitmap>()
     val publicationImage: LiveData<Bitmap> get() = _publicationImage
 
+    private val _publicationImages = MutableLiveData<List<Bitmap>>()
+    val publicationImages: LiveData<List<Bitmap>> get() = _publicationImages
+
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> get() = _loading
 
@@ -49,21 +52,24 @@ class ImageViewModel : ViewModel() {
     fun getImagesForPublications(publicationIds: List<Long>) {
         viewModelScope.launch {
             _loading.value = true
-            val allImageIds = mutableListOf<Long>()
-            for (id in publicationIds) {
-                val result = repositoryImage.getImagesIDs(id)
-                result.fold(
-                    onSuccess = {
-                        allImageIds.addAll(it)
-                    },
-                    onFailure = {
+            try {
+                val allImages = mutableListOf<Bitmap>()
+                for (id in publicationIds) {
+                    val result = repositoryImage.downloadPublicationImage(id)
+                    result.onSuccess {
+                        if (it != null) {
+                            allImages.add(it)
+                        }
+                    }.onFailure {
                         _errorMessage.value = it.message
                     }
-                )
+                }
+                _publicationImages.value = allImages
+                _loading.value = false
+            } catch (e: Exception) {
+                _errorMessage.value = e.message
+                _loading.value = false
             }
-            _imageIDs.value = allImageIds
-            downloadImages(allImageIds)
-            _loading.value = false
         }
     }
 
