@@ -1,5 +1,6 @@
 package com.testapp.mercaditoapk.screen
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
@@ -39,8 +40,15 @@ fun MenuScreen(
         Text(text = "Menú Principal")
         Text(text = "CIF: $cif")
 
-        studentImage?.let { responseBody ->
-            val painter = rememberImagePainter(data = responseBody.byteStream())
+        // Trigger downloading the image bytes
+        imageViewModel.downloadStudentImage(cif.toLong())
+
+        // Observe the student image LiveData
+        val studentImage: Bitmap? = imageViewModel.studentImage.value
+
+        // Display the image if it's available
+        studentImage?.let {
+            val painter = rememberImagePainter(data = it)
             Image(
                 painter = painter,
                 contentDescription = null,
