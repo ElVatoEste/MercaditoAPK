@@ -17,8 +17,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.testapp.mercaditoapk.viewmodel.ImageViewModel
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun DetailScreen(
@@ -32,8 +32,8 @@ fun DetailScreen(
     val publicationImage = imageViewModel.publicationImage.observeAsState()
 
     LaunchedEffect(publicationId) {
-        publicationViewModel.getPublicationById(publicationId-1)
-        imageViewModel.downloadPublicationImage(publicationId-1)
+        publicationViewModel.getPublicationById(publicationId - 1)
+        imageViewModel.downloadPublicationImage(publicationId - 1)
     }
 
     Column(
@@ -45,24 +45,62 @@ fun DetailScreen(
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {
             publicationDetails.value?.let { publication ->
-                Text(text = publication.title)
-                Spacer(modifier = Modifier.height(8.dp))
-                publicationImage.value?.let { bitmap ->
-                    val imageBitmap = bitmap.asImageBitmap()
-                    Image(
-                        bitmap = imageBitmap,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp),
-                        contentScale = ContentScale.Crop
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Text(
+                        text = publication.title,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
+                    publicationDetails.value?.let { publication ->
+                        Text(text = publication.title)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        publicationImage.value?.let { bitmap ->
+                            val imageBitmap = bitmap.asImageBitmap()
+                            Image(
+                                bitmap = imageBitmap,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "C\$ ${publication.price}",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        Text(
+                            text = "Detalles de la publicación",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                        Text(text = "Estado: ${if (publication.isVisible) "Visible" else "No Visible"}")
+                        Text(text = "Disponibilidad: ${publication.availabilityType}")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Descripción",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                        Text(text = publication.description)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Observaciones",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                        Text(text = publication.observations)
+                    }
+                } ?: run {
+                    Text(text = "No se encontraron detalles para esta publicación")
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = publication.description)
-                // Agrega más detalles de la publicación según sea necesario
-            } ?: run {
-                Text(text = "No se encontraron detalles para esta publicación")
             }
         }
     }
