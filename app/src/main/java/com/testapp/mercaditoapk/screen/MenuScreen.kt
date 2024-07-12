@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +38,7 @@ fun MenuScreen(
 ) {
     // Observe the recent publications ID LiveData
     val publicationsId = publicationViewModel.recentPublicationsId.observeAsState()
+    val isLoading = publicationViewModel.loading.observeAsState(initial = true)
 
     Log.d("publicationsId", "${publicationsId.value}")
 
@@ -60,10 +62,14 @@ fun MenuScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Section(title = "Nuestros destacados", images = images)
-        Section(title = "Sugerencias de hoy", images = images)
-        Section(title = "Novedades de tus seguidos", images = images)
-        Section(title = "Añadidos recientemente", images = images)
+        if (isLoading.value == true) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+        } else {
+            Section(title = "Nuestros destacados", images = images)
+            Section(title = "Sugerencias de hoy", images = images)
+            Section(title = "Novedades de tus seguidos", images = images)
+            Section(title = "Añadidos recientemente", images = images)
+        }
     }
 }
 

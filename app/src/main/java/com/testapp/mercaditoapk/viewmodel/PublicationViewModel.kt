@@ -29,6 +29,9 @@ class PublicationViewModel: ViewModel() {
     private val _recentPublicationsId = MutableLiveData<List<Long>>()
     val recentPublicationsId: LiveData<List<Long>> get() = _recentPublicationsId
 
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> get() = _loading
+
     private val _resultMessage = MutableLiveData<String>()
     val resultMessage: LiveData<String> get() = _resultMessage
 
@@ -37,12 +40,15 @@ class PublicationViewModel: ViewModel() {
     }
 
     fun getRecentPublicationsId() {
+        _loading.value = true
         viewModelScope.launch {
             val result = repository.getRecentPublicationsId()
             result.onSuccess {
                 _recentPublicationsId.value = it
+                _loading.value = false
             }.onFailure {
                 _resultMessage.value = it.message
+                _loading.value = false
             }
         }
     }
