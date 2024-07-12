@@ -1,18 +1,18 @@
 [versions]
-agp = "8.5.0"
+agp = "8.5.1"
 coilCompose = "2.4.0"
 converterGson = "2.9.0"
-kotlin = "1.9.0"
+kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
-junitVersion = "1.1.5"
-espressoCore = "3.5.1"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
 kotlinxSerializationJson = "1.7.0"
-lifecycleRuntimeKtx = "2.8.2"
+lifecycleRuntimeKtx = "2.8.3"
 activityCompose = "1.9.0"
-composeBom = "2023.08.00"
+composeBom = "2024.06.00"
 appcompat = "1.7.0"
-lifecycleViewmodelCompose = "2.6.2"
+lifecycleViewmodelCompose = "2.8.3"
 material3Android = "1.2.1"
 material3IconsExtended = "1.0.1"
 material3IconsCore = "1.0.1"
@@ -22,6 +22,7 @@ navigationCompose = "2.7.7"
 constraintlayoutCompose = "1.0.1"
 okhttp = "5.0.0-alpha.2"
 retrofit = "2.9.0"
+roomVersion = "2.6.1"
 runtimeLivedata = "1.6.8"
 
 [libraries]
@@ -32,6 +33,9 @@ androidx-material3-android = { module = "androidx.compose.material3:material3-an
 androidx-material3-icons-core = { module = "androidx.compose.material3:material3-icons-core", version.ref = "material3IconsCore" }
 androidx-material3-icons-extended = { module = "androidx.compose.material3:material3-icons-extended", version.ref = "material3IconsExtended" }
 androidx-material3-icons-extended-v120rc01 = { module = "androidx.compose.material3:material3-icons-extended", version.ref = "material3IconsExtendedVersion" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomVersion" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -60,4 +64,5 @@ androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtim
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+kotlinxSerialization = {id = "org.jetbrains.kotlin.plugin.serialization",version.ref = "kotlin"}
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

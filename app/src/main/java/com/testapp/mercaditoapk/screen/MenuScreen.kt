@@ -2,8 +2,8 @@ package com.testapp.mercaditoapk.screen
 
 import PublicationViewModel
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -35,28 +35,28 @@ fun MenuScreenPreview() {
 fun MenuScreen(
     navController: NavController,
     cif: String,
-    imageViewModel: ImageViewModel = viewModel(),
-    publicationViewModel: PublicationViewModel = viewModel()
+    imageViewModel: ImageViewModel = viewModel()
 ) {
     // Observe the recent publications ID LiveData
+    val publicationViewModel = viewModel<PublicationViewModel>()
     val publicationsId = publicationViewModel.recentPublicationsId.observeAsState()
     val isLoading = publicationViewModel.loading.observeAsState(initial = true)
-
-    Log.d("publicationsId", "${publicationsId.value}")
+    val imageLoading = imageViewModel.loading.observeAsState(initial = true)
 
     LaunchedEffect(publicationViewModel) {
         publicationViewModel.getRecentPublicationsId()
     }
-    // Observe the student image LiveData
-    val publicationImage = imageViewModel.publicationImage.observeAsState()
 
-    // Ensure the image is only downloaded once
-    LaunchedEffect(cif) {
-        imageViewModel.downloadPublicationImage(1L)
+    LaunchedEffect(publicationsId.value) {
+        publicationsId.value?.let { ids ->
+            if (ids.isNotEmpty()) {
+                imageViewModel.getImagesForPublications(ids)
+            }
+        }
     }
 
-    // For demo purposes, using the same image multiple times
-    val images = publicationImage.value?.let { listOf(it, it, it, it, it, it) } ?: listOf()
+    val imagesState = imageViewModel.publicationImages.observeAsState()
+    val images = imagesState.value ?: emptyList()
 
     Column(
         modifier = Modifier
@@ -64,43 +64,54 @@ fun MenuScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        if (isLoading.value == true) {
+        if (isLoading.value == true || imageLoading.value == true) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         } else {
-            Section(title = "Nuestros destacados", images = images)
-            Section(title = "Sugerencias de hoy", images = images)
-            Section(title = "Novedades de tus seguidos", images = images)
-            Section(title = "Añadidos recientemente", images = images)
+            Section(title = "Nuestros destacados", images = images, navController = navController)
+            Section(title = "Sugerencias de hoy", images = images, navController = navController)
+            Section(title = "Novedades de tus seguidos", images = images, navController = navController)
+            Section(title = "Añadidos recientemente", images = images, navController = navController)
         }
     }
 }
 
 @Composable
-fun Section(title: String, images: List<Bitmap>) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 8.dp)) {
+fun Section(title: String, images: List<Bitmap>, navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = title)
-            Text(text = "Ver todo", color = androidx.compose.ui.graphics.Color.Blue)
+            Text(
+                text = "Ver todo",
+                color = androidx.compose.ui.graphics.Color.Blue,
+                modifier = Modifier.clickable { /* Navegar a la pantalla completa */ }
+            )
         }
         Spacer(modifier = Modifier.height(8.dp))
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(images) { image ->
-                val painter = rememberImagePainter(data = image)
+            items(images) { bitmap ->
                 Image(
-                    painter = painter,
+                    painter = rememberImagePainter(bitmap),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(200.dp)  // aqui se cambia el tamaño de las imagenes
-                        .padding(5.dp),
+                        .size(200.dp)
+                        .padding(5.dp)
+                        .clickable {
+                            // Navegar a la pantalla de detalle cuando se hace clic en la imagen
+                            // Aquí necesitas obtener el publicationId correspondiente a esta imagen
+                            val publicationId = 123 // Reemplaza con la lógica para obtener el ID correcto
+                            navController.navigate("detail_screen/${publicationId}")
+                        },
                     contentScale = ContentScale.Crop
                 )
             }

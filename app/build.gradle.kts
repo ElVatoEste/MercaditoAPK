@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("kotlin-kapt")
+    alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.compose.compiler)
+    id("com.google.devtools.ksp") // ksp --> kapt
 }
 
 android {
@@ -51,10 +53,6 @@ android {
 }
 
 dependencies {
-
-
-
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -82,7 +80,6 @@ dependencies {
     //ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-
     //Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
@@ -97,12 +94,15 @@ dependencies {
     //Coil
     implementation(libs.coil.compose)
 
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-    implementation("com.squareup.okhttp3:okhttp:4.9.1")
-    //ROOM
-    val room_version = "2.6.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    kapt("androidx.room:room-compiler:$room_version")
+    //Room
+    val roomVersion = "2.5.2"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion") // KSP para procesos de anotaciones
+
+    //Serialization
+    implementation(libs.kotlinx.serialization.json)
+
+    //navigation
+    implementation(libs.androidx.navigation.compose)
 }

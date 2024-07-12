@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.testapp.mercaditoapk.screen.CrearCuentaScreen
+import com.testapp.mercaditoapk.screen.DetailScreen
 import com.testapp.mercaditoapk.screen.InicioScreen
 import com.testapp.mercaditoapk.screen.LoginScreen
 import com.testapp.mercaditoapk.screen.MenuScreen
@@ -66,6 +67,15 @@ fun NavGraph(
                 navController = navController,
                 cif = backStackEntry.arguments?.getString("cif") ?: ""
             )
+        }
+        composable(
+            route = "detail_screen/{publicationId}",
+            arguments = listOf(
+                navArgument("publicationId") { type = NavType.LongType }
+            )
+        ) { backStackEntry ->
+            val publicationId = backStackEntry.arguments?.getLong("publicationId") ?: -1
+            DetailScreen(navController = navController, publicationId = publicationId)
         }
     }
 }
